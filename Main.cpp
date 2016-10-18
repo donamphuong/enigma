@@ -2,30 +2,54 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 using namespace std;
+int* process(string config);
 
 int main(int argc, char **argv)
 {
-  ifstream plugboard(argv[argc - 1]);
+  //ifstream plugboard(argv[argc - 1]);
   int** rotors;
 
-  char* plugboardConfig;
-  getline(plugboard, plugboardConfig);
-  //int* pairs = processPlugboard(plugboardConfig);
-
+  //string plugboardConfig;
+  //getline(plugboard, plugboardConfig);
+  //processPlugboard(plugboardConfig);
+  
   for(int i = 0; i < argc - 1; i++) {
     ifstream rotor(argv[i]);
     if(!rotor.is_open()) {
       perror("The file cannot be opened");
     } else {
-      char* decrypt;
+      string decrypt;
       getline(rotor, decrypt);
-      //rotors[i] = process(decrypt);
+      cout << decrypt << "\n";
+      rotors[i] = process(decrypt);
     }
   }
 
 
+}
+
+int* process(string config) 
+{
+  int* res = new int[26];
+  string num = "";
+  int index = 0;  
+
+  for(int i = 0; i < config.size(); i++) {
+    if(config.at(i) != ' ') {
+      num += config[i];
+    } 
+    
+    if(config.at(i) == ' ' || i == config.size() - 1) {
+      res[index] = atoi(num.c_str());
+      num = "";
+      index++;
+    }
+  }
+  
+  return res;
 }
 
 int rotor(int* map, int x)
