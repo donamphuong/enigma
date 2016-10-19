@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
+#include <cmath>
 
 #include "Rotor.cpp"
 #include "Plugboard.cpp"
@@ -13,9 +15,13 @@ int findChar(int x);
 vector<int> process(string config);
 int reflector(int x);
 string decrypt(string msg);
+void rotateRotors();
+Rotor findRotor(int index);
 
-vector<Rotor> rotors;
+vector<string> rotorsOrd;
+map<string, Rotor> rotors;
 Plugboard plugboard;
+int numRotors = 0, rotation = 0;
 
 int charToInt(char c)
 {

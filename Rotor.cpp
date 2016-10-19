@@ -27,7 +27,8 @@ class Rotor
     }
 
     void rotate() {
-      ::rotate(map.rbegin(), map.rbegin()+1, map.rend());
+      ::rotate(map.begin(), map.begin()+1, map.end());
+      //printVector();
     }
 
     void printVector() {

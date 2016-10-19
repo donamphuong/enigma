@@ -15,7 +15,7 @@ int Plugboard::map(int x)
 {
   for(int i = 0; i < pairs.size();i++) {
     if(pairs.at(i) == x) {
-      return x % 2 == 0 ? pairs.at(i+1) : pairs.at(i-1);
+      return i % 2 == 0 ? pairs.at(i+1) : pairs.at(i-1);
     }
   }
   return x;

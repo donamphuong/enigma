@@ -8,17 +8,21 @@ int main(int argc, char **argv)
     getline(pb, pbconfig);
     plugboard.setMap(process(pbconfig));
 
-    for(int i = 1; i < argc - 1; i++) {
-      ifstream rotor(argv[i]);
+    if(argc > 2) {
+      numRotors = 0, rotation = 0;
+      for(int i = 1; i < argc - 1; i++) {
+        ifstream rotor(argv[i]);
 
-      if(!rotor.is_open()) {
-        perror("The file cannot be opened");
-      } else {
-        string decrypt;
-        getline(rotor, decrypt);
-        Rotor* newRotor = new Rotor(process(decrypt));
+        if(!rotor.is_open()) {
+          perror("The file cannot be opened");
+        } else {
+          string decrypt;
+          getline(rotor, decrypt);
+          Rotor* newRotor = new Rotor(process(decrypt));
 
-        rotors.push_back(*newRotor);
+          rotorsOrd.push_back(argv[i]);
+          rotors.emplace(make_pair(argv[i], *newRotor));
+        }
       }
     }
 
@@ -37,31 +41,57 @@ string decrypt(string msg)
   string res = "";
 
   for(int i = 0; i < msg.size(); i++) {
-    int num = findChar(charToInt(msg.at(i)));
 
+    int num = findChar(charToInt(msg.at(i)));
     res += intToChar(num);
-    rotors.at(0).rotate();
+
+    rotateRotors();
   }
 
   return res;
 }
 
+void rotateRotors() {
+  if(!rotorsOrd.empty()) {
+    int size = rotorsOrd.size();
+
+    for(int i = 0; i <= numRotors; i++) {
+      rotors.find(rotorsOrd.at(i%size))->second.rotate();
+
+      if(rotation % 26 == 0) {
+        numRotors = rotation/26;
+        //cout << numRotors << "\n";
+      }
+    }
+    rotation++;
+  }
+}
+
 //enigma machine
 int findChar(int x)
 {
+  int index;
+  //cout << x << " ";
   x = plugboard.map(x);
+  //cout << x << " ";
 
-  for(int i = 0; i < rotors.size(); i++) {
-    x = rotors.at(i).rotor(x);
+  for(int i = 0; i < rotorsOrd.size(); i++) {
+    index = i - 1 >= 0 ? rotation%26 : 0;
+
+    //cout << x << " " << rotation << " " << "index: " << index << "\n";
+    Rotor r = findRotor(i);
+    x = r.rotor(abs(x - index));
+    //cout << x << " ";
   }
 
   x = reflector(x);
-
-  for(int j = rotors.size() - 1; j >= 0; j--) {
-    x = rotors.at(j).reverseRotor(x);
+  //cout << x << " ";
+  for(int j = rotorsOrd.size() - 1; j >= 0; j--) {
+    index = j + 1 < rotorsOrd.size() ? rotation%26 : 0;
+    x = findRotor(j).reverseRotor((x + index)%26);
+    //cout << "index: (" << index << ") " << x << "\n";
   }
-  
-  cout << plugboard.map(x) << "\n";
+  //cout << "\n";
   return plugboard.map(x);
 }
 
@@ -83,6 +113,10 @@ vector<int> process(string config)
   }
 
   return res;
+}
+
+Rotor findRotor(int index) {
+  return rotors.find(rotorsOrd.at(index))->second;
 }
 
 //returns a character that is 13 characters ahead of the input char
