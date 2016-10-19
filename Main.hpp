@@ -10,7 +10,7 @@
 
 using namespace std;
 int findChar(int x);
-int* process(string config);
+vector<int> process(string config);
 int reflector(int x);
 string decrypt(string msg);
 

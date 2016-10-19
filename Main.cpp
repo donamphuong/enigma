@@ -40,10 +40,7 @@ string decrypt(string msg)
     int num = findChar(charToInt(msg.at(i)));
 
     res += intToChar(num);
-
-    for(int j = 0; j <  rotors.size(); j++) {
-      rotors.at(j).rotate();
-    }
+    rotors.at(0).rotate();
   }
 
   return res;
@@ -63,16 +60,16 @@ int findChar(int x)
   for(int j = rotors.size() - 1; j >= 0; j--) {
     x = rotors.at(j).reverseRotor(x);
   }
-
+  
+  cout << plugboard.map(x) << "\n";
   return plugboard.map(x);
 }
 
 //convert a string of ints into an array of ints
-int* process(string config)
+vector<int> process(string config)
 {
-  int* res = new int[26];
+  vector<int> res;
   string num = "";
-  int index = 0;
 
   for(int i = 0; i < config.size(); i++) {
     if(config.at(i) != ' ') {
@@ -80,9 +77,8 @@ int* process(string config)
     }
 
     if(config.at(i) == ' ' || i == config.size() - 1) {
-      res[index] = atoi(num.c_str());
+      res.push_back(atoi(num.c_str()));
       num = "";
-      index++;
     }
   }
 

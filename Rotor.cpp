@@ -1,37 +1,39 @@
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
 class Rotor
 {
-  int size = 26;
-  int* map;
+  vector<int> map;
 
   public:
-    Rotor(int* newMap) {
+    Rotor(vector<int> newMap) {
       map = newMap;
     }
 
     int rotor(int index) {
-      return map[index];
+      return map.at(index);
     }
 
     int reverseRotor(int value) {
-      for(int i = 0; i < size; i++) {
-        if(value == map[i]) {
+      for(int i = 0; i < map.size(); i++) {
+        if(map.at(i) == value) {
           return i;
         }
       }
-      return -1;
+      exit(1);
     }
 
     void rotate() {
-      int first = 0;
+      ::rotate(map.rbegin(), map.rbegin()+1, map.rend());
+    }
 
-      for(int i = 0; i < size; i++) {
-        if(i == 0) {
-          first = i;
-        } else {
-          map[i - 1] = map[i];
-        }
+    void printVector() {
+      for(int i = 0; i < map.size(); i++) {
+        cout << map.at(i) << " ";
       }
-
-      map[size - 1] = first;
+      cout << "\n";
     }
 };
