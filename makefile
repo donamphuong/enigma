@@ -1,6 +1,6 @@
 # edit this makefile so that running make compiles your enigma program
 
-enigma: Main.o
+enigma: clean Main.o
 	g++ -o enigma Main.o
 
 Main.o: Main.cpp
