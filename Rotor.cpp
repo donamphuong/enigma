@@ -7,6 +7,7 @@ using namespace std;
 class Rotor
 {
   vector<int> map;
+  int rotation = 0;
 
   public:
     Rotor(vector<int> newMap) {
@@ -37,4 +38,5 @@ class Rotor
       }
       cout << "\n";
     }
+
 };

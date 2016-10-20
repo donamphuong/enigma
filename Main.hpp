@@ -21,7 +21,7 @@ Rotor findRotor(int index);
 vector<string> rotorsOrd;
 map<string, Rotor> rotors;
 Plugboard plugboard;
-int numRotors = 0, rotation = 0;
+int numRotors, rotation;
 
 int charToInt(char c)
 {

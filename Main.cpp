@@ -42,8 +42,10 @@ string decrypt(string msg)
 
   for(int i = 0; i < msg.size(); i++) {
 
-    int num = findChar(charToInt(msg.at(i)));
-    res += intToChar(num);
+    if(rotation%26 != 0) {
+      int num = findChar(charToInt(msg.at(i)));
+      res += intToChar(num);
+    }
 
     rotateRotors();
   }
@@ -58,12 +60,15 @@ void rotateRotors() {
     for(int i = 0; i <= numRotors; i++) {
       rotors.find(rotorsOrd.at(i%size))->second.rotate();
 
-      if(rotation % 26 == 0) {
-        numRotors = rotation/26;
-        //cout << numRotors << "\n";
+      if((rotation + 1)%26 == 0) {
+        for(int i = 0 ; i <numRotors; i++) {
+          rotors.find(rotorsOrd.at(i%size))->second.rotate();
+        }
+        numRotors = (rotation + 1)/26;
       }
+
+      rotation++;
     }
-    rotation++;
   }
 }
 
@@ -71,27 +76,24 @@ void rotateRotors() {
 int findChar(int x)
 {
   int index;
-  //cout << x << " ";
+  cout << x << " ";
   x = plugboard.map(x);
-  //cout << x << " ";
+  cout << x << " ";
 
   for(int i = 0; i < rotorsOrd.size(); i++) {
     index = i - 1 >= 0 ? rotation%26 : 0;
-
-    //cout << x << " " << rotation << " " << "index: " << index << "\n";
-    Rotor r = findRotor(i);
-    x = r.rotor(abs(x - index));
-    //cout << x << " ";
+    x = findRotor(i).rotor(x < rotation%26 && index > 0 ? 26 + x - index : x - index);
+    cout << "rotation : (" << rotation << ") " << x << " ";
   }
 
   x = reflector(x);
-  //cout << x << " ";
+  cout << x << " ";
   for(int j = rotorsOrd.size() - 1; j >= 0; j--) {
     index = j + 1 < rotorsOrd.size() ? rotation%26 : 0;
     x = findRotor(j).reverseRotor((x + index)%26);
-    //cout << "index: (" << index << ") " << x << "\n";
+    cout /*<< "index: (" << index << ") "*/ << x << " ";
   }
-  //cout << "\n";
+  cout << "\n";
   return plugboard.map(x);
 }
 
