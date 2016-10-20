@@ -10,6 +10,7 @@ int main(int argc, char **argv)
 
     if(argc > 2) {
       numRotors = 0, rotation = 0;
+
       for(int i = 1; i < argc - 1; i++) {
         ifstream rotor(argv[i]);
 
@@ -42,10 +43,10 @@ string decrypt(string msg)
 
   for(int i = 0; i < msg.size(); i++) {
 
-    if(rotation%26 != 0) {
+    //if(rotation%26 != 0) {
       int num = findChar(charToInt(msg.at(i)));
       res += intToChar(num);
-    }
+    //}
 
     rotateRotors();
   }
@@ -54,46 +55,58 @@ string decrypt(string msg)
 }
 
 void rotateRotors() {
-  if(!rotorsOrd.empty()) {
-    int size = rotorsOrd.size();
+  int size = rotorsOrd.size();
 
-    for(int i = 0; i <= numRotors; i++) {
-      rotors.find(rotorsOrd.at(i%size))->second.rotate();
-
-      if((rotation + 1)%26 == 0) {
-        for(int i = 0 ; i <numRotors; i++) {
-          rotors.find(rotorsOrd.at(i%size))->second.rotate();
-        }
-        numRotors = (rotation + 1)/26;
-      }
-
-      rotation++;
+  for(int i = 0; i <= numRotors; i++) {
+    if(i < size) {
+      rotors.find(rotorsOrd.at(i))->second.rotate();
     }
+
+    if(rotation%26 == 0) {
+      numRotors = rotation/26;
+    }
+    rotation++;
   }
 }
 
 //enigma machine
 int findChar(int x)
 {
-  int index;
-  cout << x << " ";
+  int offset;
+  //cout << "rotation(" << rotation << ") "<< x << " ";
   x = plugboard.map(x);
-  cout << x << " ";
+  //cout << x << " ";
 
   for(int i = 0; i < rotorsOrd.size(); i++) {
-    index = i - 1 >= 0 ? rotation%26 : 0;
-    x = findRotor(i).rotor(x < rotation%26 && index > 0 ? 26 + x - index : x - index);
-    cout << "rotation : (" << rotation << ") " << x << " ";
+    Rotor r = findRotor(i);
+    offset = i - 1 >= 0 ? r.getOffset() - offset : r.getOffset();
+
+    //x -= r.getOffset();
+
+    if(x + offset < 0) {
+      offset += 26;
+    }
+    //cout << "[x=" << x << " " << "offset=" << offset << " " << "rOffset(" << r.getOffset() << ")] ";
+    x = r.rotor((x + offset)%26);
+    //cout << x << " ";
   }
 
   x = reflector(x);
-  cout << x << " ";
+  //cout << x << " ";
+
   for(int j = rotorsOrd.size() - 1; j >= 0; j--) {
-    index = j + 1 < rotorsOrd.size() ? rotation%26 : 0;
-    x = findRotor(j).reverseRotor((x + index)%26);
-    cout /*<< "index: (" << index << ") "*/ << x << " ";
+    Rotor r = findRotor(j);
+    offset = j + 1 < rotorsOrd.size() ? 0 : r.getOffset();
+    x = r.reverseRotor(x) - offset;
+
+    if(x < 0) {
+      x += 26;
+    }
+
+    //cout << x << " ";
   }
-  cout << "\n";
+
+  //cout << "\n";
   return plugboard.map(x);
 }
 
@@ -117,6 +130,7 @@ vector<int> process(string config)
   return res;
 }
 
+//find rotor in map
 Rotor findRotor(int index) {
   return rotors.find(rotorsOrd.at(index))->second;
 }

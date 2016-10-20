@@ -7,7 +7,7 @@ using namespace std;
 class Rotor
 {
   vector<int> map;
-  int rotation = 0;
+  int offset = 0;
 
   public:
     Rotor(vector<int> newMap) {
@@ -27,11 +27,6 @@ class Rotor
       exit(1);
     }
 
-    void rotate() {
-      ::rotate(map.begin(), map.begin()+1, map.end());
-      //printVector();
-    }
-
     void printVector() {
       for(int i = 0; i < map.size(); i++) {
         cout << map.at(i) << " ";
@@ -39,4 +34,14 @@ class Rotor
       cout << "\n";
     }
 
+    void rotate() {
+      offset = (offset+1)%26;
+      //if(offset == 0) {
+        //offset = 1;
+      //}
+    }
+
+    int getOffset() {
+      return offset;
+    }
 };

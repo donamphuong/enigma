@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <cmath>
+#include <cstring>
 
 #include "Rotor.cpp"
 #include "Plugboard.cpp"
