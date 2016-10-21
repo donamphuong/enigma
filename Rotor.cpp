@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
+int numRotors, rotation;
+
 using namespace std;
 
 class Rotor
@@ -47,7 +49,7 @@ class Rotor
     }
 
     void rotate() {
-      offset = (offset+1)%26;
+      offset = (offset*numRotors + 1)%26;
       //if(offset == 0) {
         //offset = 1;
       //}

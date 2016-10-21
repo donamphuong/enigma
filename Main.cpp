@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     plugboard.setMap(process(pbconfig));
 
     if(argc > 2) {
-      numRotors = 0, rotation = 0;
+      numRotors = 1, rotation = 0;
 
       for(int i = 1; i < argc - 1; i++) {
         ifstream rotor(argv[i]);
@@ -63,13 +63,12 @@ string decrypt(string msg)
 void rotateRotors() {
   int size = rotorsOrd.size();
 
-  for(int i = 0; i <= numRotors; i++) {
-    if(i < size) {
-      rotors.find(rotorsOrd.at(i))->second.rotate();
-    }
+  for(int i = 0; i < numRotors; i++) {
 
-    if(rotation%26 == 0) {
-      numRotors = rotation/26;
+    rotors.find(rotorsOrd.at(i%size))->second.rotate();
+
+    if((rotation+1)%26 == 0 && numRotors < size) {
+      numRotors++;
     }
     rotation++;
   }
@@ -79,28 +78,27 @@ void rotateRotors() {
 int findChar(int x)
 {
   int offset;
-  //cout << "rotation(" << rotation << ") "<< x << " ";
+  cout << x << " ";
   x = plugboard.map(x);
-  //cout << x << " ";
+  cout << x << " ";
 
   for(int i = 0; i < rotorsOrd.size(); i++) {
     Rotor r = findRotor(i);
     x = r.rotor(x);
-    //cout << x << " ";
+    cout << "rotation(" << r.getOffset() << ") " << x << " ";
   }
 
   x = reflector(x);
-  //cout << x << " ";
+  cout << x << " ";
 
   for(int j = rotorsOrd.size() - 1; j >= 0; j--) {
     Rotor r = findRotor(j);
-    offset = j + 1 < rotorsOrd.size() ? 0 : r.getOffset();
     x = r.reverseRotor(x);
 
-    //cout << x << " ";
+    cout << x << " ";
   }
 
-  //cout << "\n";
+  cout << "\n";
   return plugboard.map(x);
 }
 
