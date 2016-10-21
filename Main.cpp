@@ -4,6 +4,12 @@ int main(int argc, char **argv)
 {
   if(strstr(argv[argc-1], ".pb")) {
     ifstream pb(argv[argc - 1]);
+
+    if(!pb.good()) {
+      exit(1);
+      perror("The file does not exit!");
+    }
+
     string pbconfig;
     getline(pb, pbconfig);
     plugboard.setMap(process(pbconfig));
@@ -79,15 +85,7 @@ int findChar(int x)
 
   for(int i = 0; i < rotorsOrd.size(); i++) {
     Rotor r = findRotor(i);
-    offset = i - 1 >= 0 ? r.getOffset() - offset : r.getOffset();
-
-    //x -= r.getOffset();
-
-    if(x + offset < 0) {
-      offset += 26;
-    }
-    //cout << "[x=" << x << " " << "offset=" << offset << " " << "rOffset(" << r.getOffset() << ")] ";
-    x = r.rotor((x + offset)%26);
+    x = r.rotor(x);
     //cout << x << " ";
   }
 
@@ -97,11 +95,7 @@ int findChar(int x)
   for(int j = rotorsOrd.size() - 1; j >= 0; j--) {
     Rotor r = findRotor(j);
     offset = j + 1 < rotorsOrd.size() ? 0 : r.getOffset();
-    x = r.reverseRotor(x) - offset;
-
-    if(x < 0) {
-      x += 26;
-    }
+    x = r.reverseRotor(x);
 
     //cout << x << " ";
   }

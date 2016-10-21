@@ -11,20 +11,32 @@ class Rotor
 
   public:
     Rotor(vector<int> newMap) {
-      map = newMap;
+      for(int i = 0; i < newMap.size(); i++) {
+        map.push_back(newMap.at(i) - i);
+      }
     }
 
     int rotor(int index) {
-      return map.at(index);
+      int val = map.at(transform(index + offset)) + index;
+      return transform(val);
     }
 
     int reverseRotor(int value) {
       for(int i = 0; i < map.size(); i++) {
-        if(map.at(i) == value) {
+        int val =  i + map.at(transform(i + offset));
+
+        if(value == transform(val)) {
           return i;
         }
       }
       exit(1);
+    }
+
+    int transform(int x) {
+      if(x < 0) {
+        x += 26;
+      }
+      return x%26;
     }
 
     void printVector() {
