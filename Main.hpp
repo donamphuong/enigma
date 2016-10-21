@@ -19,8 +19,7 @@ string decrypt(string msg);
 void rotateRotors();
 Rotor findRotor(int index);
 
-vector<string> rotorsOrd;
-map<string, Rotor> rotors;
+vector<Rotor> rotors;
 Plugboard plugboard;
 
 

@@ -15,8 +15,6 @@ int main(int argc, char **argv)
     plugboard.setMap(process(pbconfig));
 
     if(argc > 2) {
-      numRotors = 1, rotation = 0;
-
       for(int i = 1; i < argc - 1; i++) {
         ifstream rotor(argv[i]);
 
@@ -26,9 +24,7 @@ int main(int argc, char **argv)
           string decrypt;
           getline(rotor, decrypt);
           Rotor* newRotor = new Rotor(process(decrypt));
-
-          rotorsOrd.push_back(argv[i]);
-          rotors.emplace(make_pair(argv[i], *newRotor));
+          rotors.push_back(*newRotor);
         }
       }
     }
@@ -61,16 +57,10 @@ string decrypt(string msg)
 }
 
 void rotateRotors() {
-  int size = rotorsOrd.size();
-
-  for(int i = 0; i < numRotors; i++) {
-
-    rotors.find(rotorsOrd.at(i%size))->second.rotate();
-
-    if((rotation+1)%26 == 0 && numRotors < size) {
-      numRotors++;
+  for(int i = 0; i < rotors.size(); i++) {
+    if((i > 0 && rotors.at(i-1).getRotation() == 26) || i == 0) {
+      rotors.at(i).rotate();
     }
-    rotation++;
   }
 }
 
@@ -78,27 +68,25 @@ void rotateRotors() {
 int findChar(int x)
 {
   int offset;
-  cout << x << " ";
+  //cout << x << " ";
   x = plugboard.map(x);
-  cout << x << " ";
+  //cout << x << " ";
 
-  for(int i = 0; i < rotorsOrd.size(); i++) {
-    Rotor r = findRotor(i);
-    x = r.rotor(x);
-    cout << "rotation(" << r.getOffset() << ") " << x << " ";
+  for(int i = 0; i < rotors.size(); i++) {
+    x = rotors.at(i).rotor(x);
+    //cout << "rotation(" << rotors.at(i).getOffset() << ") " << x << " ";
   }
 
   x = reflector(x);
-  cout << x << " ";
+  //cout << x << " ";
 
-  for(int j = rotorsOrd.size() - 1; j >= 0; j--) {
-    Rotor r = findRotor(j);
-    x = r.reverseRotor(x);
+  for(int j = rotors.size() - 1; j >= 0; j--) {
+    x = rotors.at(j).reverseRotor(x);
 
-    cout << x << " ";
+    //cout << x << " ";
   }
 
-  cout << "\n";
+  //cout << "\n";
   return plugboard.map(x);
 }
 
@@ -120,11 +108,6 @@ vector<int> process(string config)
   }
 
   return res;
-}
-
-//find rotor in map
-Rotor findRotor(int index) {
-  return rotors.find(rotorsOrd.at(index))->second;
 }
 
 //returns a character that is 13 characters ahead of the input char

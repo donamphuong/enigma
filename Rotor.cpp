@@ -2,14 +2,13 @@
 #include <algorithm>
 #include <iostream>
 
-int numRotors, rotation;
-
 using namespace std;
 
 class Rotor
 {
   vector<int> map;
   int offset = 0;
+  int rotation = 0;
 
   public:
     Rotor(vector<int> newMap) {
@@ -49,13 +48,19 @@ class Rotor
     }
 
     void rotate() {
-      offset = (offset*numRotors + 1)%26;
-      //if(offset == 0) {
-        //offset = 1;
-      //}
+      offset = (offset+1)%26;
+      rotation++;
     }
 
     int getOffset() {
       return offset;
+    }
+
+    int getRotation() {
+      return rotation;
+    }
+
+    void setOffset(int value) {
+      offset = value;
     }
 };
